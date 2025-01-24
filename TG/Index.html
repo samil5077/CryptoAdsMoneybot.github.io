@@ -1,0 +1,31 @@
+            document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+ 
+            // Save the updated balance in localStorage
+            localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
+ 
+            // Send withdrawal request to admin via Telegram
+            const message = `Withdrawal Request from ${telegramUserName}:\nAmount: ${amount} points\nPayment Method: ${paymentMethod}\nPhone Number: ${phoneNumber}`;
+            sendWithdrawRequestToAdmin(message);
+ 
+            // Show success message
+            document.getElementById('withdraw-status').textContent = 'Withdrawal request sent successfully!';
+ 
+            // Clear form
+            document.getElementById('withdraw-amount').value = '';
+            document.getElementById('withdraw-phone').value = '';
+        }
+ 
+        // Function to send withdrawal request to admin
+        function sendWithdrawRequestToAdmin(message) {
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_USER_ID}&text=${encodeURIComponent(message)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        console.log('Message sent to admin');
+                    }
+                })
+                .catch(error => console.error('Error sending message:', error));
+        }
+    </script>
+</body>
+</html>
